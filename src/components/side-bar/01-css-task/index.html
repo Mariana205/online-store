@@ -1,22 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>SideBar component</title>
   <link rel="stylesheet" href="style.css">
 
-  <style>
-    .wrapper {
-      width: 400px;
-      margin: 100px auto;
-    }
-  </style>
 </head>
+
 <body>
-<main>
-  <div class="wrapper">
-    <!-- SideBar component -->
-  </div>
-</main>
+  <main>
+    <div class="wrapper">
+      <div class="bar">
+        <!-- SideBar component -->
+        <div class="wrap slider">
+          <h3 class="title-bar">Price</h3>
+          <div class="slider">
+            <div slider class="slider-distance">
+              <div>
+                <div inverse-left style="width:70%;"></div>
+                <div inverse-right style="width:70%;"></div>
+                <div range style="left:0%;right:0%;"></div>
+                <span thumb style="left:0%;"></span>
+                <span thumb class="max-trumb" style="left:100%;"></span>
+                <div sign style="left:0%;">
+                  <span class="value left">0 <label for="value">UAH</label></span>
+                </div>
+                <div sign style="left:100%;">
+                  <span class="value right">85000 <label for="value">UAH</label></span>
+                </div>
+              </div>
+              <input type="range" class="min" value="0" max="85000" min="0" step="1" oninput="
+      this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
+      let value = (this.value/parseInt(this.max))*100
+      var children = this.parentNode.childNodes[1].childNodes;
+      children[1].style.width=value+'%';
+      children[5].style.left=value+'%';
+      children[7].style.left=value+'%';children[11].style.left=value+'%';
+      children[11].childNodes[1].innerHTML=this.value;" />
+
+              <input type="range" class="max" value="85000" max="85000" min="0" step="1" oninput="
+      this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
+      let value = (this.value/parseInt(this.max))*100
+      var children = this.parentNode.childNodes[1].childNodes;
+      children[3].style.width=(100-value)+'%';
+      children[5].style.right=(100-value)+'%';
+      children[9].style.left=value+'%';children[13].style.left=value+'%';
+      children[13].childNodes[1].innerHTML=this.value;" />
+            </div>
+          </div>
+
+
+          <div class="filters-list">
+            <h3 class="title-bar">Category</h3>
+            <ul class="list">
+              <li class="form">
+                <input type="checkbox" class="vahicle" name="vehicle" value="Monitors">
+                <label for="vehicle" class="label">Monitors</label>
+              </li>
+              <li class="form">
+                <input type="checkbox" class="vahicle" name="vehicle" value="Laptops">
+                <label for="vehicle" class="label">Laptops</label>
+              </li>
+              <li class="form">
+                <input type="checkbox" class="vahicle" name="vehicle" value="Video cards">
+                <label for="vehicle" class="label">Video cards</label>
+              </li>
+              <li class="form">
+                <input type="checkbox" class="vahicle" name="vehicle" value="Gaming keyboards">
+                <label for="vehicle" class="label">Gaming keyboards</label>
+              </li>
+              <li class="form">
+                <input type="checkbox" class="vahicle" name="vehicle" value="Computer mouse">
+                <label for="vehicle" class="label">Computer mouse</label>
+              </li>
+              <li class="form">
+                <input type="checkbox" class="vahicle" name="vehicle" value="SSD">
+                <label for="vehicle" class="label">SSD</label>
+              </li>
+              <li class="form">
+                <input type="checkbox" class="vahicle" name="vehicle" value="Sound cards">
+                <label for="vehicle" class="label">Sound cards</label>
+              </li>
+              <li class="form">
+                <input type="checkbox" class="vahicle" name="vehicle" value="Ram">
+                <label for="vehicle" class="label">RAM</label>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="wrap filters-list">
+          <h3 class="title-bar">Brand</h3>
+          <ul class="list">
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Asus">
+              <label for="vehicle" class="label">Asus</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Acer">
+              <label for="vehicle" class="label">Acer</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Apple">
+              <label for="vehicle" class="label">Apple</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Dell">
+              <label for="vehicle" class="label">Dell</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Dynamode">
+              <label for="vehicle" class="label">Dynamode</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Gigabyte">
+              <label for="vehicle" class="label">Gigabyte</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Kingston">
+              <label for="vehicle" class="label">Kingston</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Lenovo">
+              <label for="vehicle" class="label">Lenovo</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="Logitech">
+              <label for="vehicle" class="label">Logitech</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="MSI">
+              <label for="vehicle" class="label">MSI</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="BenQ">
+              <label for="vehicle" class="label">BenQ</label>
+            </li>
+            <li class="form">
+              <input type="checkbox" class="vahicle" name="vehicle" value="A4Tech">
+              <label for="vehicle" class="label">A4Tech</label>
+            </li>
+          </ul>
+        </div>
+
+        <div class="rating">
+          <h3 class="title-bar">Rating</h3>
+          <div class="slider star">
+            <div slider class="slider-distance">
+              <div>
+                <div inverse-left style="width:70%;"></div>
+                <div inverse-right style="width:70%;"></div>
+                <div range style="left:0%;right:0%;"></div>
+                <span thumb style="left:0%;"></span>
+                <span thumb class="max-trumb" style="left:100%;"></span>
+                <div sign style="left:0%;">
+                  <span class="value left">0</span>
+                </div>
+                <div sign style="left:100%;">
+                  <span class="value right">5</span>
+                </div>
+              </div>
+              <input type="range" class="min" value="0" max="5" min="0" step="0.01" oninput="
+        this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
+        let value = (this.value/parseInt(this.max))*100
+        var children = this.parentNode.childNodes[1].childNodes;
+        children[1].style.width=value+'%';
+        children[5].style.left=value+'%';
+        children[7].style.left=value+'%';children[11].style.left=value+'%';
+        children[11].childNodes[1].innerHTML=this.value;" />
+
+              <input type="range" class="max" value="5" max="5" min="0" step="0.01" oninput="
+        this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
+        let value = (this.value/parseInt(this.max))*100
+        var children = this.parentNode.childNodes[1].childNodes;
+        children[3].style.width=(100-value)+'%';
+        children[5].style.right=(100-value)+'%';
+        children[9].style.left=value+'%';children[13].style.left=value+'%';
+        children[13].childNodes[1].innerHTML=this.value;" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn">
+        <button class="btn-clear">Clear all filters</button>
+      </div>
+    </div>
+  </main>
 </body>
+
 </html>

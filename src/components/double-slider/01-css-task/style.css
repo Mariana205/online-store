@@ -1,1 +1,88 @@
-/* put your styles in this file */
+.slider-distance {
+  width: 240px;
+  margin: 100px auto;
+}
+
+[slider] {
+  width: 240px;
+  position: relative;
+  height: 4px;
+}
+
+[slider]>div {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  height: 4px;
+}
+
+[slider]>div>[inverse-left] {
+  position: absolute;
+  left: 0;
+  height: 4px;
+  background-color: #c8c2f3;
+  border-radius: 2px;
+}
+
+[slider]>div>[inverse-right] {
+  position: absolute;
+  right: 0;
+  height: 4px;
+  background-color: #c8c2f3;
+  border-radius: 2px;
+}
+
+
+[slider]>div>[range] {
+  position: absolute;
+  height: 4px;
+  background-color: #7e72f2;
+}
+
+[thumb] {
+  position: absolute;
+  top: -7px;
+  z-index: 2;
+  height: 18px;
+  width: 6px;
+  cursor: pointer;
+  background: url(./Vector.svg) 0 no-repeat white;
+}
+
+.max-trumb {
+  transform: rotate(180deg);
+}
+
+[slider]>input[type=range] {
+  position: absolute;
+  pointer-events: none;
+  -webkit-appearance: none;
+  z-index: 3;
+  height: 14px;
+  width: 100%;
+  opacity: 0;
+}
+
+div[slider]>input[type=range]::-webkit-slider-thumb {
+  pointer-events: all;
+  width: 28px;
+  height: 28px;
+  -webkit-appearance: none;
+  cursor: grab;
+}
+
+.value {
+  position: absolute;
+  margin-top: 30px;
+  font-size: .8rem;
+}
+
+.value.right {
+  position: relative;
+  float: right;
+  margin-right: -25px;
+}
+
+.value.left {
+  margin-left: -10px;
+}

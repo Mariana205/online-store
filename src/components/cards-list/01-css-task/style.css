@@ -1,1 +1,91 @@
-/* put your styles in this file */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");
+
+:root {
+  --white-100: #fff;
+  --white-200: #EDEDED;
+  --black-100: #2C2C2C;
+  --purple-100: #7E72F2;
+  --purple-200: #6d5ff0;
+}
+
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-size: 16px;
+  color: var(--black-100);
+}
+
+.card-list {
+  max-width: 991px;
+  display: flex;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  grid-gap: 20px;
+}
+
+.card {
+  max-width: 317px;
+  max-height: 394px;
+  background: var(--white-100);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.133);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.img {
+  margin: 12px;
+}
+
+.about {
+  display: flex;
+  justify-content: space-between;
+  margin: 12px 25px;
+}
+
+.star {
+  align-items: center;
+  justify-content: space-evenly;
+  display: flex;
+  background: var(--purple-100);
+  border-radius: 3px;
+  width: 70px;
+  height: 27px;
+  color: var(--white-100);
+}
+
+.rating {
+  font-size: 13px;
+}
+
+.name-laptops {
+  font-size: 14px;
+  line-height: 16px;
+  margin: 12px 25px;
+}
+
+.class-computer {
+  margin: 12px 25px 19px;
+  font-size: 10px;
+}
+
+.name-btn {
+  width: 100%;
+  border: none;
+  outline: none;
+  text-transform: uppercase;
+  border-radius: 0px 0px 8px 8px;
+  color: var(--white-100);
+  background: var(--purple-100);
+  height: 40px;
+  font-size: 12px;
+}
+
+.name-btn:hover {
+  background-color: var(--purple-200);
+  color: var(--white-100);
+  cursor: pointer;
+  transition: .3s;
+}
