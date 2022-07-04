@@ -9,7 +9,7 @@ const BACKEND_URL = 'https://online-store.bootcamp.place/api/';
 export default class OnlineStorePage {
   constructor() {
     this.pageSize = 9;
-    this.productsInBasket = [];
+    this.productsInBasket = new Map();
 
     this.createDefaultUrl();
 
@@ -96,7 +96,6 @@ export default class OnlineStorePage {
     const totalElements = 100;
     const totalPages = Math.ceil(totalElements / this.pageSize);
 
-
     const cardsList = new CardsList();
     const pagination = new Pagination({
       activePageIndex: 0,
@@ -107,7 +106,6 @@ export default class OnlineStorePage {
       this.brands
     );
     const searchBox = new SearchBox();
-    const basket = new Basket();
 
     this.components.searchBox = searchBox;
     this.components.sideBar = sideBar;
@@ -187,9 +185,8 @@ export default class OnlineStorePage {
     });
 
     this.components.sideBar.element.addEventListener('clear-filters', event => {
-      const clearFilters = event.detail;
 
-      this.updateFilters(clearFilters);
+      this.resetFilters();
     });
 
     this.components.cardsList.element.addEventListener('add-product', event => {
@@ -206,45 +203,32 @@ export default class OnlineStorePage {
 
   async updateByText(value) {
     this.url.searchParams.set('q', value);
-    const response = await fetch(this.url);
-    const products = await response.json();
 
-    // const totalCount = Number(response.headers.get('X-Total-Count'));
-    // console.log('totalCount', totalCount);
-
-    this.components.cardsList.update(products);
+    this.updateCards();
   }
 
   async updateByMinPrice(value) {
     this.url.searchParams.set('price_gte', value);
-    const response = await fetch(this.url);
-    const products = await response.json();
 
-    this.components.cardsList.update(products);
+    this.updateCards();
   }
 
   async updateByMaxPrice(value) {
     this.url.searchParams.set('price_lte', value);
-    const response = await fetch(this.url);
-    const products = await response.json();
 
-    this.components.cardsList.update(products);
+    this.updateCards();
   }
 
   async updateByMinStar(value) {
     this.url.searchParams.set('rating_gte', value);
-    const response = await fetch(this.url);
-    const products = await response.json();
 
-    this.components.cardsList.update(products);
+    this.updateCards();
   }
 
   async updateByMaxStar(value) {
     this.url.searchParams.set('rating_lte', value);
-    const response = await fetch(this.url);
-    const products = await response.json();
 
-    this.components.cardsList.update(products);
+    this.updateCards();
   }
 
   async updateCategories() {
@@ -280,10 +264,7 @@ export default class OnlineStorePage {
         }
       }
     }
-    const response = await fetch(this.url);
-    const products = await response.json();
-
-    this.components.cardsList.update(products);
+    this.updateCards();
   }
 
   async updateSelectBrands(id, checked) {
@@ -300,26 +281,27 @@ export default class OnlineStorePage {
         }
       }
     }
-    const response = await fetch(this.url);
-    const products = await response.json();
-
-    this.components.cardsList.update(products);
+    this.updateCards();
   }
 
-  async updateFilters() {
+  async resetFilters() {
     this.createDefaultUrl();
 
-    const response = await fetch(this.url);
-    const products = await response.json();
-
-    this.components.cardsList.update(products);
+    this.updateCards();
   }
 
   addEventListenerBasket() {
     const searchElement = this.element.querySelector('[data-element="basket"]');
 
     searchElement.addEventListener('click', event => {
+
       const basket = new Basket(this.productsInBasket);
+
+      basket.element.addEventListener('change-basket', event => {
+
+        this.updateBasket(event.detail);
+      });
+
       const basketWindow = this.element.querySelector('[data-element="modal-basket"]');
 
       this.components.basket = basket;
@@ -330,6 +312,7 @@ export default class OnlineStorePage {
 
       basketWindow.innerHTML = '';
       basketWindow.append(basket.element);
+      this.updateBasketTotalPrice();
     });
 
     document.addEventListener('close-basket', event => {
@@ -344,9 +327,55 @@ export default class OnlineStorePage {
   }
 
   addProduct(product) {
-    this.productsInBasket.push(product);
+    if (this.productsInBasket.has(product)) {
+      const count = this.productsInBasket.get(product);
+      this.productsInBasket.set(product, count + 1)
+    } else {
+      this.productsInBasket.set(product, 1);
+    }
+    this.updateBasketCount();
+  }
+
+  updateBasket(item) {
+
+    this.productsInBasket.set(item.product, item.countProduct)
+    this.updateBasketCount();
+    this.updateBasketTotalPrice();
+  }
+
+  updateBasketCount() {
+    let sumCount = 0;
+
+    this.productsInBasket.forEach(value => {
+      sumCount += value;
+    });
+
     const counterProduct = this.element.querySelector('.counter-product');
-    const productsCountInBasket = this.productsInBasket.length;
-    counterProduct.innerHTML = productsCountInBasket;
+    if (sumCount > 0) {
+      counterProduct.innerHTML = sumCount;
+    } else {
+      counterProduct.innerHTML = '';
+    }
+  }
+
+  updateBasketTotalPrice() {
+    let totalPrice = 0;
+
+    for (const item of this.productsInBasket.entries()) {
+      const product = item[0];
+      const count = item[1];
+
+      totalPrice += product.price * count;
+    }
+    this.components.basket.updateProductPrice(totalPrice)
+  }
+
+  async updateCards() {
+    const response = await fetch(this.url);
+    const products = await response.json();
+
+    this.components.cardsList.update(products);
+    const totalElements = Number(response.headers.get('X-Total-Count'));
+    this.components.pagination.updatePageCount(totalElements, this.pageSize);
   }
 }

@@ -8,6 +8,7 @@ export default class Pagination {
 
     this.render();
     this.addEventListener();
+    this.addPageEventListener();
   }
 
   getTemplate() {
@@ -17,7 +18,9 @@ export default class Pagination {
         <div class="page vector" data-element="nav-prev">
           <i class="bi bi-chevron-left"></i>
         </div>
+        <div data-element="pagination1">
         ${this.getPages()}
+        </div>
         <div class="page vector" data-element="nav-next">
           <i class="bi bi-chevron-right"></i>
         </div>
@@ -27,6 +30,11 @@ export default class Pagination {
   }
 
   getPages() {
+
+    if (this.totalPages === 0) {
+      return 'No pagination';
+    }
+
     return `
       <div class="wrapper-paginator" data-element="pagination">
       ${new Array(this.totalPages).fill(1).map( (item, index) => {
@@ -83,24 +91,14 @@ export default class Pagination {
   render() {
     const wrapper = document.createElement('div');
 
+    wrapper.innerHTML = '';
     wrapper.innerHTML = this.getTemplate();
 
     this.element = wrapper.firstElementChild;
   }
 
-  addEventListener() {
-    const prevPageBtn = this.element.querySelector('[data-element="nav-prev"]');
-    const nextPageBtn = this.element.querySelector('[data-element="nav-next"]');
+  addPageEventListener() {
     const pagesList = this.element.querySelector('[data-element="pagination"]');
-
-
-    prevPageBtn.addEventListener('click', event => {
-      this.prevPage();
-    });
-
-    nextPageBtn.addEventListener('click', event => {
-      this.nextPage();
-    });
 
     pagesList.addEventListener('click', event => {
       const pageItem = event.target.closest('.page');
@@ -115,6 +113,20 @@ export default class Pagination {
     });
   }
 
+  addEventListener() {
+    const prevPageBtn = this.element.querySelector('[data-element="nav-prev"]');
+    const nextPageBtn = this.element.querySelector('[data-element="nav-next"]');
+
+
+    prevPageBtn.addEventListener('click', event => {
+      this.prevPage();
+    });
+
+    nextPageBtn.addEventListener('click', event => {
+      this.nextPage();
+    });
+  }
+
   dispatchEvent(pageIndex) {
     const customEvent = new CustomEvent('page-changed', {
       detail: pageIndex
@@ -122,10 +134,22 @@ export default class Pagination {
     this.element.dispatchEvent(customEvent);
   }
 
-  // updatePages() {
-  //   const customEvent = new CustomEvent('page-', {
-  //     detail: pageIndex
-  //   });
-  //   this.element.dispatchEvent(customEvent);
-  // }
+  updatePageCount(totalElements, pageSize) {
+    const totalPages = Math.ceil(totalElements / pageSize);
+    this.activePageIndex = 0;
+    this.totalPages = totalPages;
+    if (totalPages <= 0) {
+      this.totalPages = 0
+    }
+
+    this.renderPagination();
+  }
+
+  renderPagination() {
+    const pagesList = this.element.querySelector('[data-element="pagination1"]');
+
+    pagesList.innerHTML = ''
+    pagesList.innerHTML = this.getPages();
+    this.addPageEventListener();
+  }
 }

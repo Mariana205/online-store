@@ -16,9 +16,11 @@ export default class Basket {
           <i class="bi bi-x-lg"></i>
         </div>
         <div data-element="card-list-basked"></div>
-        <div class="total">Total: 111997</div>
+        <div class="total">Total:<span class="total-price"></span></div>
         <div class="order">
-        <button class="btn-order">Order</button>
+        <a href="https://t.me/maryanka205" target="_blank">
+        <button class="btn-order"> Order</button>
+        </a>
         </div>
       </div>
       </div>
@@ -51,15 +53,37 @@ export default class Basket {
   }
 
   renderCards() {
-    const cards = this.data.map(item => {
-      const card = new BasketItem(item);
+    const cards = [];
 
-      return card.element;
-    });
+    for (const item of this.data.entries()) {
+      const product = item[0];
+      const count = item[1];
+      if (count < 1) {
+        continue;
+      }
 
+      const basketItem = new BasketItem(product, count);
+      cards.push(basketItem.element);
+
+      basketItem.element.addEventListener('change-basket', event => {
+        const customEvent = new CustomEvent('change-basket', {
+          detail: event.detail
+        });
+
+        this.element.dispatchEvent(customEvent);
+      });
+
+    }
     const cardListBasket = this.element.querySelector('[data-element="card-list-basked"]');
+
 
     cardListBasket.innerHTML = '';
     cardListBasket.append(...cards);
   }
+
+  updateProductPrice(totalPrice) {
+    const totalPriceBasket = this.element.querySelector('.total-price');
+    totalPriceBasket.innerHTML = totalPrice;
+  }
+
 }

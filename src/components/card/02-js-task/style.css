@@ -11,12 +11,12 @@
   --purple-200: #6d5ff0;
 }
 
-
 body {
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
   font-size: 16px;
   color: var(--black-100);
+  background-color: #f9f9f9;
 }
 
 .container {
@@ -299,11 +299,9 @@ div[slider]>input[type=range]::-webkit-slider-thumb {
   cursor: pointer;
 }
 
-
 .rating-slider {
   margin-top: 20px;
 }
-
 
 .btn-clear {
   padding: 16px 0;
