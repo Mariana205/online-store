@@ -192,7 +192,6 @@ export default class DoubleSlider {
     }
 
     this.dragging = thumbElem;
-
     this.element.classList.add('range-slider_dragging');
 
     document.addEventListener('pointermove', this.onThumbPointerMove);

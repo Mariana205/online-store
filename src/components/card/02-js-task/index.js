@@ -242,6 +242,7 @@ export default class OnlineStorePage {
         }
       }
     }
+
     this.updateCards();
   }
 
@@ -349,11 +350,14 @@ export default class OnlineStorePage {
   }
 
   async updateCards() {
+    this.url.searchParams.delete('_page');
+
     const response = await fetch(this.url);
     const products = await response.json();
 
     this.components.cardsList.update(products);
     const totalElements = Number(response.headers.get('X-Total-Count'));
     this.components.pagination.updatePageCount(totalElements, this.pageSize);
+    this.components.pagination.setPage(0);
   }
 }
