@@ -26,35 +26,8 @@ export default class OnlineStorePage {
     this.updateCategories();
     this.updateBrands();
 
-    this.update(1);
+    this.loadCardList(1);
     this.addEventListenerBasket();
-  }
-
-
-
-  createDefaultUrl() {
-    this.url = new URL('products', BACKEND_URL)
-    this.url.searchParams.set('_limit', this.pageSize);
-  }
-
-  async loadData(pageNumber) {
-    this.url.searchParams.set('_page', pageNumber)
-    const response = await fetch(this.url)
-
-    const products = await response.json();
-    return products;
-  }
-
-  async loadCategories() {
-    const response = await fetch(this.categoriesUrl);
-    const categories = await response.json();
-    return categories;
-  }
-
-  async loadBrands() {
-    const response = await fetch(this.brandsUrl);
-    const brands = await response.json();
-    return brands;
   }
 
   getTemplate() {
@@ -107,6 +80,7 @@ export default class OnlineStorePage {
     );
     const searchBox = new SearchBox();
 
+
     this.components.searchBox = searchBox;
     this.components.sideBar = sideBar;
     this.components.cardsList = cardsList;
@@ -137,7 +111,7 @@ export default class OnlineStorePage {
     this.components.pagination.element.addEventListener('page-changed', event => {
       const pageIndex = event.detail;
 
-      this.update(pageIndex + 1);
+      this.loadCardList(pageIndex + 1);
     });
 
     this.components.searchBox.element.addEventListener('search-changed', event => {
@@ -146,28 +120,18 @@ export default class OnlineStorePage {
       this.updateByText(text);
     });
 
-    this.components.sideBar.element.addEventListener('min-price-changed', event => {
-      const minPrice = event.detail;
+    this.components.sideBar.element.addEventListener('range-selected-price', event => {
+      const minPrice = event.detail.from;
+      const maxPrice = event.detail.to;
 
-      this.updateByMinPrice(minPrice);
+      this.updateByPrice(minPrice, maxPrice);
     });
 
-    this.components.sideBar.element.addEventListener('max-price-changed', event => {
-      const maxPrice = event.detail;
+    this.components.sideBar.element.addEventListener('range-selected-star', event => {
+      const minStar = event.detail.from;
+      const maxStar = event.detail.to;
 
-      this.updateByMaxPrice(maxPrice);
-    });
-
-    this.components.sideBar.element.addEventListener('min-star-changed', event => {
-      const minStar = event.detail;
-
-      this.updateByMinStar(minStar);
-    });
-
-    this.components.sideBar.element.addEventListener('max-star-changed', event => {
-      const maxStar = event.detail;
-
-      this.updateByMaxStar(maxStar);
+      this.updateByStar(minStar, maxStar);
     });
 
     this.components.sideBar.element.addEventListener('select-category', event => {
@@ -195,7 +159,32 @@ export default class OnlineStorePage {
     });
   }
 
-  async update(pageNumber) {
+  createDefaultUrl() {
+    this.url = new URL('products', BACKEND_URL)
+    this.url.searchParams.set('_limit', this.pageSize);
+  }
+
+  async loadData(pageNumber) {
+    this.url.searchParams.set('_page', pageNumber)
+    const response = await fetch(this.url)
+
+    const products = await response.json();
+    return products;
+  }
+
+  async loadCategories() {
+    const response = await fetch(this.categoriesUrl);
+    const categories = await response.json();
+    return categories;
+  }
+
+  async loadBrands() {
+    const response = await fetch(this.brandsUrl);
+    const brands = await response.json();
+    return brands;
+  }
+
+  async loadCardList(pageNumber) {
     const data = await this.loadData(pageNumber);
 
     this.components.cardsList.update(data);
@@ -207,26 +196,15 @@ export default class OnlineStorePage {
     this.updateCards();
   }
 
-  async updateByMinPrice(value) {
-    this.url.searchParams.set('price_gte', value);
-
+  async updateByPrice(minPrice, maxPrice) {
+    this.url.searchParams.set('price_gte', minPrice);
+    this.url.searchParams.set('price_lte', maxPrice);
     this.updateCards();
   }
 
-  async updateByMaxPrice(value) {
-    this.url.searchParams.set('price_lte', value);
-
-    this.updateCards();
-  }
-
-  async updateByMinStar(value) {
-    this.url.searchParams.set('rating_gte', value);
-
-    this.updateCards();
-  }
-
-  async updateByMaxStar(value) {
-    this.url.searchParams.set('rating_lte', value);
+  async updateByStar(minStar, maxStar) {
+    this.url.searchParams.set('rating_gte', minStar);
+    this.url.searchParams.set('rating_lte', maxStar);
 
     this.updateCards();
   }

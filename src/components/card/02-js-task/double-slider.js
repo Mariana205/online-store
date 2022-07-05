@@ -5,7 +5,11 @@ export default class DoubleSlider {
   onThumbPointerMove = event => {
     event.preventDefault();
 
-    const { left: innerLeft, right: innerRight, width } = this.subElements.inner.getBoundingClientRect();
+    const {
+      left: innerLeft,
+      right: innerRight,
+      width
+    } = this.subElements.inner.getBoundingClientRect();
 
     if (this.dragging === this.subElements.thumbLeft) {
       let newLeft = (event.clientX - innerLeft + this.shiftX) / width;
@@ -39,8 +43,6 @@ export default class DoubleSlider {
         newRight = 100 - left;
       }
 
-      console.error(111);
-
       this.dragging.style.right = this.subElements.progress.style.right = newRight + '%';
       this.subElements.to.innerHTML = this.formatValue(this.getValue().to);
     }
@@ -52,26 +54,27 @@ export default class DoubleSlider {
     document.removeEventListener('pointermove', this.onThumbPointerMove);
     document.removeEventListener('pointerup', this.onThumbPointerUp);
 
-    this.element.dispatchEvent(new CustomEvent('range-selected', {
+    const customEvent = new CustomEvent('range-selected', {
       bubbles: true,
       detail: {
         filterName: this.filterName,
         value: this.getValue()
       }
-    }));
+    });
+    this.element.dispatchEvent(customEvent);
   };
 
   constructor({
-                min = 100,
-                max = 200,
-                formatValue = value => value,
-                selected = {
-                  from: min,
-                  to: max
-                },
-                precision = 0,
-                filterName = ''
-              } = {}) {
+    min = 100,
+    max = 200,
+    formatValue = value => value,
+    selected = {
+      from: min,
+      to: max
+    },
+    precision = 0,
+    filterName = ''
+  } = {}) {
     this.min = min;
     this.max = max;
     this.formatValue = formatValue;
@@ -82,8 +85,11 @@ export default class DoubleSlider {
     this.render();
   }
 
-  get template() {
-    const { from, to } = this.selected;
+  getTemplate() {
+    const {
+      from,
+      to
+    } = this.selected;
 
     return `<div class="range-slider">
       <span data-element="from">${this.formatValue(from)}</span>
@@ -107,7 +113,7 @@ export default class DoubleSlider {
   render() {
     const element = document.createElement('div');
 
-    element.innerHTML = this.template;
+    element.innerHTML = this.getTemplate();
 
     this.element = element.firstElementChild;
     this.element.ondragstart = () => false;
@@ -120,7 +126,10 @@ export default class DoubleSlider {
   }
 
   initEventListeners() {
-    const { thumbLeft, thumbRight } = this.subElements;
+    const {
+      thumbLeft,
+      thumbRight
+    } = this.subElements;
 
     thumbLeft.addEventListener('pointerdown', event => this.onThumbPointerDown(event));
     thumbRight.addEventListener('pointerdown', event => this.onThumbPointerDown(event));
@@ -171,7 +180,10 @@ export default class DoubleSlider {
 
     event.preventDefault();
 
-    const { left, right } = thumbElem.getBoundingClientRect();
+    const {
+      left,
+      right
+    } = thumbElem.getBoundingClientRect();
 
     if (thumbElem === this.subElements.thumbLeft) {
       this.shiftX = right - event.clientX;
@@ -189,8 +201,12 @@ export default class DoubleSlider {
 
   getValue() {
     const rangeTotal = this.max - this.min;
-    const { left } = this.subElements.thumbLeft.style;
-    const { right } = this.subElements.thumbRight.style;
+    const {
+      left
+    } = this.subElements.thumbLeft.style;
+    const {
+      right
+    } = this.subElements.thumbRight.style;
 
     const leftShift = parseFloat(left) * rangeTotal / 100;
     const rightShift = parseFloat(right) * rangeTotal / 100;
@@ -198,10 +214,13 @@ export default class DoubleSlider {
     const from = Math.round((this.min + leftShift) * this.precision) / this.precision;
     const to = Math.round((this.max - rightShift) * this.precision) / this.precision;
 
-    return { from, to };
+    return {
+      from,
+      to
+    };
   }
 
-  reset () {
+  reset() {
     this.selected = {
       from: this.min,
       to: this.max

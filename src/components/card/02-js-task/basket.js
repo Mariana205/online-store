@@ -85,5 +85,4 @@ export default class Basket {
     const totalPriceBasket = this.element.querySelector('.total-price');
     totalPriceBasket.innerHTML = totalPrice;
   }
-
 }

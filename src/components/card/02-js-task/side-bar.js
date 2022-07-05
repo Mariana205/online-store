@@ -1,13 +1,28 @@
 import Category from "./category.js";
 import Brands from "./brands.js";
+import DoubleSlider from "./double-slider.js";
 
 export default class SideBar {
   constructor() {
+
+    this.doubleSliderPrice = new DoubleSlider({
+      min: 0,
+      max: 85000,
+      filterName: "price"
+    });
+
+    this.doubleSliderStar = new DoubleSlider({
+      min: 0,
+      max: 5,
+      precision: 2,
+      filterName: "star"
+    });
+
     this.render();
-    this.addEventListenerMinPrice();
-    this.addEventListenerMaxPrice();
-    this.addEventListenerMaxStar();
-    this.addEventListenerMinStar();
+    this.renderDoubleSliderPrice();
+    this.renderDoubleSliderStar();
+    this.addEventListenerPrice();
+    this.addEventListenerStar();
     this.addEventListenerInputCategories();
     this.addEventListenerInputBrands();
     this.addEventListenerPressBtnClear();
@@ -20,41 +35,8 @@ export default class SideBar {
     <!-- SideBar component -->
     <div class="wrap-slider slider">
       <h3 class="title-bar">Price</h3>
-      <div class="slider">
-        <div slider class="slider-distance">
-          <div>
-            <div inverse-left style="width:70%;"></div>
-            <div inverse-right style="width:70%;"></div>
-            <div range style="left:0%;right:0%;"></div>
-            <span thumb style="left:0%;"></span>
-            <span thumb class="max-thumb" style="left:100%;"></span>
-            <div sign style="left:0%;">
-              <span class="value left">0 <label for="value">UAH</label></span>
-            </div>
-            <div sign style="left:100%;">
-              <span class="value right">85000 <label for="value">UAH</label></span>
-            </div>
-          </div>
-          <input type="range" class="min" data-element="min-price" value="0" max="85000" min="0" step="1" oninput="
-              this.value=Math.min(this.value,this.parentNode.childNodes[5].value-1);
-              let value = (this.value/parseInt(this.max))*100
-              var children = this.parentNode.childNodes[1].childNodes;
-              children[1].style.width=value+'%';
-              children[5].style.left=value+'%';
-              children[7].style.left=value+'%';children[11].style.left=value+'%';
-              children[11].childNodes[1].innerHTML=this.value;" />
-
-          <input type="range" class="max" data-element="max-price" value="85000" max="85000" min="0" step="1" oninput="
-            this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(-1));
-            let value = (this.value/parseInt(this.max))*100
-            var children = this.parentNode.childNodes[1].childNodes;
-            children[3].style.width=(100-value)+'%';
-            children[5].style.right=(100-value)+'%';
-            children[9].style.left=value+'%';children[13].style.left=value+'%';
-            children[13].childNodes[1].innerHTML=this.value;" />
-        </div>
+      <div class="slider" data-element="double-slider-price">
       </div>
-
       <div class="filters-list">
         <h3 class="title-bar">Category</h3>
         <ul class="list">
@@ -63,7 +45,6 @@ export default class SideBar {
         </ul>
       </div>
     </div>
-
     <div class="wrap-slider filters-list">
       <h3 class="title-bar">Brand</h3>
       <ul class="list">
@@ -73,39 +54,7 @@ export default class SideBar {
     </div>
     <div class="rating">
       <h3 class="title-bar">Rating</h3>
-      <div class="slider">
-        <div slider class="slider-distance">
-          <div>
-            <div inverse-left style="width:70%;"></div>
-            <div inverse-right style="width:70%;"></div>
-            <div range style="left:0%;right:0%;"></div>
-            <span thumb style="left:0%;"></span>
-            <span thumb class="max-thumb" style="left:100%;"></span>
-            <div sign style="left:0%;">
-              <span class="value left">0</span>
-            </div>
-            <div sign style="left:100%;">
-              <span class="value right">5</span>
-            </div>
-          </div>
-          <input type="range" class="min" data-element="min-star" value="0" max="5" min="0" step="0.01" oninput="
-    this.value=Math.min(this.value,this.parentNode.childNodes[5].value-(-1));
-    let value = (this.value/parseInt(this.max))*100
-    var children = this.parentNode.childNodes[1].childNodes;
-    children[1].style.width=value+'%';
-    children[5].style.left=value+'%';
-    children[7].style.left=value+'%';children[11].style.left=value+'%';
-    children[11].childNodes[1].innerHTML=this.value;" />
-
-          <input type="range" class="max" data-element="max-star" value="5" max="5" min="0" step="0.01" oninput="
-    this.value=Math.max(this.value,this.parentNode.childNodes[3].value-(1));
-    let value = (this.value/parseInt(this.max))*100
-    var children = this.parentNode.childNodes[1].childNodes;
-    children[3].style.width=(100-value)+'%';
-    children[5].style.right=(100-value)+'%';
-    children[9].style.left=value+'%';children[13].style.left=value+'%';
-    children[13].childNodes[1].innerHTML=this.value;" />
-        </div>
+      <div class="slider" data-element="double-slider-star">
       </div>
     </div>
     </div>
@@ -126,45 +75,19 @@ export default class SideBar {
     this.element = wrapper.firstElementChild;
   }
 
-  addEventListenerMinPrice() {
-    const searchElement = this.element.querySelector('[data-element="min-price"]');
-
-    searchElement.addEventListener('change', event => {
-      const customEvent = new CustomEvent('min-price-changed', {
-        detail: event.target.value
+  addEventListenerPrice() {
+    this.doubleSliderPrice.element.addEventListener('range-selected', event => {
+      const customEvent = new CustomEvent('range-selected-price', {
+         detail: event.detail.value
       });
       this.element.dispatchEvent(customEvent);
     });
-  }
+  };
 
-  addEventListenerMaxPrice() {
-    const searchElement = this.element.querySelector('[data-element="max-price"]');
-
-    searchElement.addEventListener('change', event => {
-      const customEvent = new CustomEvent('max-price-changed', {
-        detail: event.target.value
-      });
-      this.element.dispatchEvent(customEvent);
-    });
-  }
-
-  addEventListenerMinStar() {
-    const searchElement = this.element.querySelector('[data-element="min-star"]');
-
-    searchElement.addEventListener('change', event => {
-      const customEvent = new CustomEvent('min-star-changed', {
-        detail: event.target.value
-      });
-      this.element.dispatchEvent(customEvent);
-    });
-  }
-
-  addEventListenerMaxStar() {
-    const searchElement = this.element.querySelector('[data-element="max-star"]');
-
-    searchElement.addEventListener('change', event => {
-      const customEvent = new CustomEvent('max-star-changed', {
-        detail: event.target.value
+  addEventListenerStar() {
+    this.doubleSliderStar.element.addEventListener('range-selected', event => {
+      const customEvent = new CustomEvent('range-selected-star', {
+         detail: event.detail.value
       });
       this.element.dispatchEvent(customEvent);
     });
@@ -186,6 +109,20 @@ export default class SideBar {
   updateCategories(data = []) {
     this.data = data;
     this.renderCategories();
+  }
+
+  renderDoubleSliderPrice() {
+    const searchElement = this.element.querySelector('[data-element="double-slider-price"]');
+
+    searchElement.innerHTML = '';
+    searchElement.append(this.doubleSliderPrice.element);
+  }
+
+  renderDoubleSliderStar() {
+    const searchElement = this.element.querySelector('[data-element="double-slider-star"]');
+
+    searchElement.innerHTML = '';
+    searchElement.append(this.doubleSliderStar.element);
   }
 
   renderBrands() {
@@ -235,9 +172,13 @@ export default class SideBar {
   }
 
   clearAllFilters() {
-    // const searchElement = this.element.querySelector('[data-element="min-star"]');
     const allCheckBoxes = this.element.querySelectorAll('input[type=checkbox]');
     const searchElementSearchBox = document.querySelector('[data-element="search-box-input"]');
+
+
+    this.doubleSliderPrice.reset();
+    this.doubleSliderStar.reset();
+
 
     searchElementSearchBox.value = "";
     allCheckBoxes.forEach(checkBox => {
